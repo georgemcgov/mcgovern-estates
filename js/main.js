@@ -11,12 +11,13 @@ const properties = [
     price: "€585,000",
     type: "For Sale",
     status: "For Sale",
+    category: "residential",
     beds: 3,
     baths: 2,
     parking: 1,
     size: "86 m²",
     link: "https://www.mcgovernestates.ie/residential/brochure/18-oaklands-greystones-wicklow/4982342",
-    image: "https://photos-a.propertyimages.ie/media/2/4/3/4982342/1b52e8c5-0c9b-4dc3-9c44-07e6de8c8334_c.jpg"
+    image: "https://photos-a.propertyimages.ie/media/2/4/3/4982342/1b52e8c5-0c9b-4dc3-9c44-07e6de8c8334_l.jpg"
   },
   {
     id: 2,
@@ -25,12 +26,13 @@ const properties = [
     price: "€595,000",
     type: "For Sale",
     status: "For Sale",
+    category: "residential",
     beds: 4,
     baths: 3,
     parking: 2,
     size: "142.5 m²",
     link: "https://www.mcgovernestates.ie/residential/brochure/16-the-walk-ashford-wicklow/4982253",
-    image: "https://photos-a.propertyimages.ie/media/3/5/2/4982253/1c4c58c4-17e1-4bb3-a07a-4afd69887343_c.jpg"
+    image: "https://photos-a.propertyimages.ie/media/3/5/2/4982253/1c4c58c4-17e1-4bb3-a07a-4afd69887343_l.jpg"
   },
   {
     id: 3,
@@ -39,12 +41,28 @@ const properties = [
     price: "€395,000",
     type: "For Sale",
     status: "For Sale",
+    category: "residential",
     beds: 2,
     baths: 1,
     parking: 1,
     size: "83.9 m²",
     link: "https://www.mcgovernestates.ie/residential/brochure/71-priory-court-delgany-wicklow/4838518",
-    image: "https://photos-a.propertyimages.ie/media/8/1/5/4838518/5d6d566e-288b-43ca-8e73-49c2de7bb10a_c.jpg"
+    image: "https://photos-a.propertyimages.ie/media/8/1/5/4838518/5d6d566e-288b-43ca-8e73-49c2de7bb10a_l.jpg"
+  },
+  {
+    id: 5,
+    name: "Apt 4, Marina Village",
+    address: "Greystones, Co. Wicklow",
+    price: "€1,950 / month",
+    type: "To Let",
+    status: "To Let",
+    category: "letting",
+    beds: 2,
+    baths: 1,
+    parking: 1,
+    size: "72 m²",
+    link: "https://www.mcgovernestates.ie/residentiallettingservice",
+    image: "https://photos-a.propertyimages.ie/media/2/4/3/4982342/1b52e8c5-0c9b-4dc3-9c44-07e6de8c8334_l.jpg"
   },
   {
     id: 4,
@@ -53,18 +71,20 @@ const properties = [
     price: "€675,000",
     type: "For Sale",
     status: "For Sale",
+    category: "residential",
     beds: 3,
     baths: 2,
     parking: 2,
     size: "116.5 m²",
     link: "https://www.mcgovernestates.ie/residential/brochure/1-delgany-glen-greystones-wicklow/4981648",
-    image: "https://photos-a.propertyimages.ie/media/8/4/6/4981648/ea098485-18ab-4d68-8872-51c9daa26b33_c.jpg"
+    image: "https://photos-a.propertyimages.ie/media/8/4/6/4981648/ea098485-18ab-4d68-8872-51c9daa26b33_l.jpg"
   }
 ];
 // ============================================================
 
 function renderProperties() {
   const grid = document.getElementById('properties-grid');
+  if (!grid) return;
   grid.innerHTML = properties.map((p, i) => `
     <a class="property-card" href="${p.link}" target="_blank" rel="noopener" style="text-decoration:none;">
       <div class="property-img-wrap">
@@ -136,7 +156,9 @@ function tSlide(dir) {
   tGo(tCurrent + dir);
 }
 
-window.addEventListener('resize', () => tGo(tCurrent));
+if (document.getElementById('testimonialsTrack')) {
+  window.addEventListener('resize', () => tGo(tCurrent));
+}
 
 // CAROUSEL
 let currentSlide = 0;
@@ -163,4 +185,6 @@ function startAutoplay() {
   autoplayTimer = setInterval(() => goToSlide(currentSlide + 1), 5000);
 }
 
-startAutoplay();
+if (document.querySelector('.carousel-slide')) {
+  startAutoplay();
+}
