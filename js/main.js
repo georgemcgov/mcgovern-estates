@@ -82,11 +82,16 @@ const properties = [
 ];
 // ============================================================
 
+// Convert property names to URL-friendly filenames
+function getPropertyUrl(name) {
+  return `properties/${name.toLowerCase().replace(/\s+/g, '-').replace(/[,\.]/g, '')}.html`;
+}
+
 function renderProperties() {
   const grid = document.getElementById('properties-grid');
   if (!grid) return;
   grid.innerHTML = properties.map((p, i) => `
-    <a class="property-card" href="${p.link}" target="_blank" rel="noopener" style="text-decoration:none;">
+    <a class="property-card" href="${getPropertyUrl(p.name)}" style="text-decoration:none;">
       <div class="property-img-wrap">
         <img src="${p.image}" alt="${p.name}" class="property-img" loading="lazy" />
         <span class="property-badge">${p.status}</span>
