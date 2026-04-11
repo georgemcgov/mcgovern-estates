@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — McGovern Estates</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      background: #f8f8f6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-wrap {
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem;
+    }
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .login-logo img { height: 52px; }
+    .login-logo .admin-badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8C005C;
+      border: 1px solid rgba(140,0,92,0.3);
+      padding: 3px 10px;
+    }
+    .login-card {
+      background: #fff;
+      border: 1px solid rgba(26,26,24,0.1);
+      padding: 2.5rem;
+    }
+    .login-card h1 {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #1A1A18;
+      margin-bottom: 0.35rem;
+    }
+    .login-card p {
+      font-size: 0.82rem;
+      color: #6B6B60;
+      margin-bottom: 2rem;
+    }
+    .form-row { margin-bottom: 1.1rem; }
+    .form-row label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6B6B60;
+      margin-bottom: 6px;
+    }
+    .form-row input {
+      width: 100%;
+      border: 1px solid rgba(26,26,24,0.15);
+      background: #fafafa;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 0.95rem;
+      color: #1A1A18;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-row input:focus {
+      border-color: #C8007D;
+      background: #fff;
+    }
+    .btn-login {
+      width: 100%;
+      background: #8C005C;
+      color: #fff;
+      border: none;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s;
+    }
+    .btn-login:hover { background: #C8007D; }
+    .btn-login:disabled { background: #ccc; cursor: not-allowed; }
+    .error-msg {
+      display: none;
+      background: #fff0f5;
+      border: 1px solid #ffb3d1;
+      color: #8C005C;
+      font-size: 0.82rem;
+      padding: 10px 14px;
+      margin-top: 1rem;
+    }
+    .footer-note {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+    .footer-note a { color: #8C005C; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-logo">
+    <img src="https://www.mcgovernestates.ie/Content/Site/mcgovernestates.ie/images/logo.png" alt="McGovern Estates" />
+    <div><span class="admin-badge">Admin Panel</span></div>
+  </div>
+
+  <div class="login-card">
+    <h1>Welcome back</h1>
+    <p>Sign in to manage your property listings.</p>
+
+    <form id="loginForm">
+      <div class="form-row">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@mcgovernestates.ie" required autocomplete="email" />
+      </div>
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-login" id="loginBtn">Sign In →</button>
+      <div class="error-msg" id="errorMsg"></div>
+    </form>
+  </div>
+
+  <div class="footer-note">
+    <a href="/">← Back to website</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+  const SUPABASE_URL = 'https://dbrmdeqokplohkjeslkl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicm1kZXFva3Bsb2hramVzbGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTU1NTcsImV4cCI6MjA5MTQ3MTU1N30.sN_aUdU98VL7hYsT1BwHGMlJMvkKOd4qYvNbRgHcH-k';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Redirect if already logged in
+  sb.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = 'dashboard.html';
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+    errorMsg.style.display = 'none';
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      errorMsg.textContent = error.message || 'Invalid email or password.';
+      errorMsg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In →';
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  });
+</script>
+</body>
+</html>

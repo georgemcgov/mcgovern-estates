@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Property — McGovern Estates Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Helvetica, Arial, sans-serif; background: #f4f4f2; color: #1A1A18; display: flex; min-height: 100vh; }
+
+    /* Sidebar (same as dashboard) */
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      background: #1A1A18;
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 10;
+    }
+    .sidebar-logo { padding: 1.5rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .sidebar-logo img { height: 40px; display: block; }
+    .sidebar-logo span { display: block; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-top: 0.5rem; }
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 0.75rem 1.25rem; font-size: 0.85rem; color: rgba(255,255,255,0.6); text-decoration: none; transition: all 0.15s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .nav-item.active { background: rgba(200,0,125,0.15); color: #fff; border-left: 2px solid #C8007D; }
+    .nav-item svg { flex-shrink: 0; opacity: 0.7; }
+    .nav-item.active svg { opacity: 1; }
+    .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.07); }
+    .user-info { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 0.75rem; word-break: break-all; }
+    .btn-logout { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.5); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.15s; }
+    .btn-logout:hover { color: #fff; }
+
+    /* Main */
+    .main { margin-left: 240px; flex: 1; padding: 2rem; max-width: calc(100% - 240px); }
+    .top-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .top-bar h1 { font-size: 1.5rem; font-weight: 400; }
+    .back-link { font-size: 0.82rem; color: #6B6B60; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+    .back-link:hover { color: #1A1A18; }
+
+    /* Form layout */
+    .form-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
+
+    /* Card */
+    .card { background: #fff; border: 1px solid rgba(26,26,24,0.08); padding: 1.75rem; margin-bottom: 1.5rem; }
+    .card:last-child { margin-bottom: 0; }
+    .card-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #C8007D; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(200,0,125,0.15); }
+
+    /* Form fields */
+    .form-row { margin-bottom: 1.1rem; }
+    .form-row:last-child { margin-bottom: 0; }
+    .form-row label { display: block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6B60; margin-bottom: 5px; }
+    .form-row input, .form-row select, .form-row textarea {
+      width: 100%; border: 1px solid rgba(26,26,24,0.15); background: #fafafa;
+      font-family: Helvetica, Arial, sans-serif; font-size: 0.9rem; color: #1A1A18;
+      padding: 10px 13px; outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: #C8007D; background: #fff; }
+    .form-row textarea { resize: vertical; min-height: 100px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+    /* Image section */
+    .image-preview-wrap {
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      background: #f0f0ee; border: 1px dashed rgba(26,26,24,0.2);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; margin-bottom: 1rem;
+    }
+    .image-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .img-placeholder { text-align: center; color: #aaa; font-size: 0.82rem; }
+    .img-placeholder svg { display: block; margin: 0 auto 0.5rem; opacity: 0.3; }
+    .upload-btn-wrap { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+    .btn-upload {
+      flex: 1; background: #f0f0ee; color: #1A1A18; border: 1px solid rgba(26,26,24,0.15);
+      padding: 9px 14px; font-family: Helvetica, Arial, sans-serif; font-size: 0.8rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-upload:hover { background: #e4e4e0; }
+    .upload-divider { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; color: #aaa; font-size: 0.75rem; }
+    .upload-divider::before, .upload-divider::after { content: ''; flex: 1; height: 1px; background: rgba(26,26,24,0.1); }
+    #fileInput { display: none; }
+    .upload-progress { display: none; font-size: 0.78rem; color: #6B6B60; margin-top: 0.5rem; }
+
+    /* Toggle */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(26,26,24,0.06); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 0.85rem; color: #1A1A18; }
+    .toggle-sub { font-size: 0.75rem; color: #6B6B60; margin-top: 2px; }
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #ddd; cursor: pointer;
+      transition: background 0.2s; border-radius: 22px;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; top: 3px; left: 3px; transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: #C8007D; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    /* Buttons */
+    .btn-save {
+      width: 100%; background: #C8007D; color: #fff; border: none;
+      font-family: Helvetica, Arial, sans-serif; font-size: 0.85rem; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase; padding: 14px;
+      cursor: pointer; transition: background 0.15s; margin-bottom: 0.75rem;
+    }
+    .btn-save:hover { background: #a0006a; }
+    .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-cancel-link {
+      display: block; text-align: center; font-size: 0.8rem; color: #6B6B60;
+      text-decoration: none; padding: 8px;
+    }
+    .btn-cancel-link:hover { color: #1A1A18; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 2rem; right: 2rem; background: #1A1A18; color: #fff; padding: 12px 20px; font-size: 0.85rem; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 100; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #8C005C; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; max-width: 100%; padding: 1.5rem; }
+      .form-layout { grid-template-columns: 1fr; }
+      .two-col, .three-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <img src="https://www.mcgovernestates.ie/Content/Site/mcgovernestates.ie/images/logo.png" alt="McGovern Estates" />
+    <span>Admin Panel</span>
+  </div>
+  <div class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="property.html" class="nav-item active">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Add Property
+    </a>
+    <a href="/" class="nav-item" target="_blank">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      View Website
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-info" id="userEmail">Loading…</div>
+    <button class="btn-logout" onclick="logout()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign out
+    </button>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+  <div class="top-bar">
+    <a href="dashboard.html" class="back-link">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    <h1 id="pageTitle">Add New Property</h1>
+  </div>
+
+  <div class="form-layout">
+    <!-- Left column: main form fields -->
+    <div>
+      <!-- Property Details -->
+      <div class="card">
+        <div class="card-title">Property Details</div>
+        <div class="form-row">
+          <label for="name">Property Name *</label>
+          <input type="text" id="name" placeholder="e.g. 18 Oaklands" required />
+        </div>
+        <div class="form-row">
+          <label for="address">Full Address *</label>
+          <input type="text" id="address" placeholder="e.g. Greystones, Co. Wicklow" required />
+        </div>
+        <div class="two-col">
+          <div class="form-row">
+            <label for="price">Price / Rent *</label>
+            <input type="text" id="price" placeholder="e.g. €595,000 or €2,000 / month" required />
+          </div>
+          <div class="form-row">
+            <label for="status">Status *</label>
+            <select id="status">
+              <option value="For Sale">For Sale</option>
+              <option value="To Let">To Let</option>
+              <option value="Sale Agreed">Sale Agreed</option>
+              <option value="Let Agreed">Let Agreed</option>
+            </select>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="form-row">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="residential">Residential</option>
+              <option value="letting">Letting</option>
+              <option value="commercial">Commercial</option>
+              <option value="new-homes">New Homes</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="size">Floor Area</label>
+            <input type="text" id="size" placeholder="e.g. 120 m²" />
+          </div>
+        </div>
+        <div class="three-col">
+          <div class="form-row">
+            <label for="beds">Bedrooms</label>
+            <input type="number" id="beds" min="0" max="20" placeholder="3" />
+          </div>
+          <div class="form-row">
+            <label for="baths">Bathrooms</label>
+            <input type="number" id="baths" min="0" max="20" placeholder="2" />
+          </div>
+          <div class="form-row">
+            <label for="parking">Parking</label>
+            <input type="number" id="parking" min="0" max="20" placeholder="1" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="description">Description</label>
+          <textarea id="description" placeholder="Describe the property — key features, condition, location highlights…"></textarea>
+        </div>
+        <div class="form-row">
+          <label for="link">External Listing URL</label>
+          <input type="url" id="link" placeholder="https://www.mcgovernestates.ie/…" />
+        </div>
+        <div class="form-row">
+          <label for="displayOrder">Display Order</label>
+          <input type="number" id="displayOrder" min="0" placeholder="0 — lower numbers appear first" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column: image + settings -->
+    <div>
+      <!-- Image -->
+      <div class="card">
+        <div class="card-title">Main Photo</div>
+
+        <div class="image-preview-wrap" id="imagePreviewWrap">
+          <img id="imagePreview" alt="Preview" />
+          <div class="img-placeholder" id="imgPlaceholder">
+            <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            No image yet
+          </div>
+        </div>
+
+        <div class="upload-btn-wrap">
+          <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+            Upload Image
+          </button>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)" />
+        <div class="upload-progress" id="uploadProgress">Uploading…</div>
+
+        <div class="upload-divider">or paste a URL</div>
+
+        <div class="form-row">
+          <label for="imageUrl">Image URL</label>
+          <input type="url" id="imageUrl" placeholder="https://…" oninput="previewFromUrl(this.value)" />
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="card">
+        <div class="card-title">Settings</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Featured listing</div>
+            <div class="toggle-sub">Shows first on the homepage</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="featured" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Active / Visible</div>
+            <div class="toggle-sub">Uncheck to hide from site</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="active" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div class="card">
+        <button class="btn-save" id="saveBtn" onclick="saveProperty()">Save Property →</button>
+        <a href="dashboard.html" class="btn-cancel-link">Cancel</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+  const SUPABASE_URL = 'https://dbrmdeqokplohkjeslkl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicm1kZXFva3Bsb2hramVzbGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTU1NTcsImV4cCI6MjA5MTQ3MTU1N30.sN_aUdU98VL7hYsT1BwHGMlJMvkKOd4qYvNbRgHcH-k';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get('id');
+  let currentImageUrl = '';
+  let userId = null;
+
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+    document.getElementById('userEmail').textContent = session.user.email;
+    userId = session.user.id;
+
+    if (editId) {
+      document.getElementById('pageTitle').textContent = 'Edit Property';
+      document.querySelector('.nav-item.active').textContent = ' Edit Property';
+      loadProperty(editId);
+    }
+  }
+
+  async function loadProperty(id) {
+    const { data, error } = await sb.from('properties').select('*').eq('id', id).single();
+    if (error || !data) { showToast('Could not load property', true); return; }
+
+    document.getElementById('name').value        = data.name || '';
+    document.getElementById('address').value     = data.address || '';
+    document.getElementById('price').value       = data.price || '';
+    document.getElementById('status').value      = data.status || 'For Sale';
+    document.getElementById('category').value    = data.category || 'residential';
+    document.getElementById('size').value        = data.size || '';
+    document.getElementById('beds').value        = data.beds ?? '';
+    document.getElementById('baths').value       = data.baths ?? '';
+    document.getElementById('parking').value     = data.parking ?? '';
+    document.getElementById('description').value = data.description || '';
+    document.getElementById('link').value        = data.link || '';
+    document.getElementById('displayOrder').value = data.display_order ?? 0;
+    document.getElementById('featured').checked  = data.featured || false;
+    document.getElementById('active').checked    = data.active !== false;
+
+    if (data.image) {
+      currentImageUrl = data.image;
+      document.getElementById('imageUrl').value = data.image;
+      previewFromUrl(data.image);
+    }
+  }
+
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  }
+
+  // Image preview from URL
+  function previewFromUrl(url) {
+    if (!url) return;
+    const img = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('imgPlaceholder');
+    img.src = url;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+    currentImageUrl = url;
+  }
+
+  // File upload to Supabase Storage
+  async function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const progress = document.getElementById('uploadProgress');
+    progress.style.display = 'block';
+    progress.textContent = 'Uploading…';
+
+    const ext = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 8)}.${ext}`;
+    const filePath = `properties/${fileName}`;
+
+    const { data, error } = await sb.storage
+      .from('property-images')
+      .upload(filePath, file, { contentType: file.type, upsert: false });
+
+    if (error) {
+      progress.textContent = 'Upload failed: ' + error.message;
+      showToast('Image upload failed', true);
+      return;
+    }
+
+    const { data: urlData } = sb.storage
+      .from('property-images')
+      .getPublicUrl(filePath);
+
+    const publicUrl = urlData.publicUrl;
+    currentImageUrl = publicUrl;
+    document.getElementById('imageUrl').value = publicUrl;
+    previewFromUrl(publicUrl);
+    progress.textContent = '✓ Image uploaded';
+    setTimeout(() => { progress.style.display = 'none'; }, 3000);
+  }
+
+  // Save property (create or update)
+  async function saveProperty() {
+    const btn = document.getElementById('saveBtn');
+    const name = document.getElementById('name').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const price = document.getElementById('price').value.trim();
+
+    if (!name || !address || !price) {
+      showToast('Please fill in Name, Address and Price', true);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    const payload = {
+      name,
+      address,
+      price,
+      status:        document.getElementById('status').value,
+      category:      document.getElementById('category').value,
+      size:          document.getElementById('size').value.trim() || null,
+      beds:          parseInt(document.getElementById('beds').value) || null,
+      baths:         parseInt(document.getElementById('baths').value) || null,
+      parking:       parseInt(document.getElementById('parking').value) || null,
+      description:   document.getElementById('description').value.trim() || null,
+      link:          document.getElementById('link').value.trim() || null,
+      image:         currentImageUrl || document.getElementById('imageUrl').value.trim() || null,
+      featured:      document.getElementById('featured').checked,
+      active:        document.getElementById('active').checked,
+      display_order: parseInt(document.getElementById('displayOrder').value) || 0,
+    };
+
+    let error;
+    if (editId) {
+      ({ error } = await sb.from('properties').update(payload).eq('id', editId));
+    } else {
+      ({ error } = await sb.from('properties').insert(payload));
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Save Property →';
+
+    if (error) {
+      showToast('Save failed: ' + error.message, true);
+    } else {
+      showToast(editId ? 'Property updated!' : 'Property created!');
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    }
+  }
+
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  init();
+</script>
+</body>
+</html>

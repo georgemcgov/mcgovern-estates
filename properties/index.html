@@ -411,11 +411,10 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../js/main.js"></script>
 <script>
-  // Properties page specific JavaScript
-  
-  // Wait for properties to load from main.js
+  // Properties page — waits for Supabase data before initialising filters
   function initPropertiesPage() {
     const grid = document.getElementById('propertiesGrid');
     const searchInput = document.getElementById('searchInput');
@@ -538,12 +537,8 @@
     renderFilteredProperties();
   }
   
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPropertiesPage);
-  } else {
-    initPropertiesPage();
-  }
+  // Initialise once Supabase data has loaded (fired by main.js)
+  window.addEventListener('propertiesLoaded', initPropertiesPage);
 </script>
 
 </body>

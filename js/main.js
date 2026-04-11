@@ -1,9 +1,45 @@
 // ============================================================
-// PROPERTIES — Edit this list each week to add new listings
-// Copy an entry, paste it at the TOP of the array,
-// update the fields, save the file. That's it.
+// PROPERTIES — now loaded live from Supabase.
+// Use the Admin Panel at /admin/ to manage listings.
+// The array below is kept as a fallback in case Supabase is unreachable.
 // ============================================================
-const properties = [
+
+const SUPABASE_URL      = 'https://dbrmdeqokplohkjeslkl.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRicm1kZXFva3Bsb2hramVzbGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTU1NTcsImV4cCI6MjA5MTQ3MTU1N30.sN_aUdU98VL7hYsT1BwHGMlJMvkKOd4qYvNbRgHcH-k';
+
+let properties = [];
+
+async function loadPropertiesFromSupabase() {
+  try {
+    const sb = window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    if (!sb) throw new Error('Supabase SDK not loaded');
+
+    const { data, error } = await sb
+      .from('properties')
+      .select('*')
+      .eq('active', true)
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    // Normalise: add `type` as alias for `status` so existing filter code works
+    properties = (data || []).map(p => ({ ...p, type: p.status }));
+  } catch (err) {
+    console.warn('Supabase unavailable, using fallback listings:', err.message);
+    properties = FALLBACK_PROPERTIES.map(p => ({ ...p, type: p.status }));
+  }
+
+  renderProperties();
+  window.dispatchEvent(new Event('propertiesLoaded'));
+}
+
+// ============================================================
+// FALLBACK — only used if Supabase cannot be reached
+const FALLBACK_PROPERTIES = [
   {
     id: 1,
     name: "18 Oaklands",
@@ -82,6 +118,8 @@ const properties = [
 ];
 // ============================================================
 
+loadPropertiesFromSupabase();
+
 // Convert property names to URL-friendly filenames
 function getPropertyUrl(name) {
   return `properties/${name.toLowerCase().replace(/\s+/g, '-').replace(/[,\.]/g, '')}.html`;
@@ -122,8 +160,6 @@ function renderProperties() {
     </a>
   `).join('');
 }
-
-renderProperties();
 
 // HAMBURGER MENU
 function toggleMenu() {
