@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — McGovern Estates</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .page-wrap { padding-top: 72px; min-height: 100vh; background: #fff; }
+
+    /* Page hero */
+    .page-hero {
+      background: linear-gradient(135deg, #8C005C 0%, #C8007D 100%);
+      padding: 60px 8vw 50px;
+      color: #fff;
+    }
+    .page-hero .section-eyebrow { color: rgba(255,255,255,0.7); }
+    .page-hero .section-eyebrow::before { background: rgba(255,255,255,0.5); }
+    .page-hero h1 {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.1;
+      margin-top: 0.75rem;
+    }
+    .page-hero h1 em { font-style: italic; color: #f9a8d4; }
+    .page-hero p {
+      margin-top: 1rem;
+      font-size: 1rem; font-weight: 300;
+      color: rgba(255,255,255,0.8);
+      max-width: 540px;
+    }
+
+    /* Story section */
+    .story-section {
+      padding: 6rem 8vw;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8vw;
+      align-items: center;
+    }
+    .story-img-wrap {
+      position: relative;
+      aspect-ratio: 4/5;
+      overflow: hidden;
+    }
+    .story-img { width: 100%; height: 100%; object-fit: cover; }
+    .story-accent {
+      position: absolute; bottom: -20px; right: -20px;
+      width: 60%; height: 60%;
+      border: 2px solid var(--moss); z-index: -1;
+    }
+    .story-body p {
+      font-size: 0.95rem; font-weight: 300; line-height: 1.85;
+      color: var(--mid); margin-top: 1.5rem;
+    }
+    .story-stats {
+      display: flex; gap: 2.5rem;
+      margin-top: 2.5rem; padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .story-stat-num {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 2.5rem; font-weight: 300; color: var(--moss);
+    }
+    .story-stat-label {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--mid); margin-top: 4px;
+    }
+
+    /* Values */
+    .values-section {
+      background: var(--ink);
+      padding: 6rem 8vw;
+    }
+    .values-section .section-eyebrow { color: var(--gold); }
+    .values-section .section-title { color: #fff; }
+    .values-section .section-title em { color: var(--gold); }
+    .values-grid {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+    }
+    .value-card {
+      background: var(--ink);
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.2s;
+    }
+    .value-card:hover { background: rgba(255,255,255,0.04); }
+    .value-number {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 3rem; font-weight: 200;
+      color: rgba(200,0,125,0.3);
+      line-height: 1; margin-bottom: 1rem;
+    }
+    .value-title {
+      font-size: 1.15rem; font-weight: 600;
+      color: #fff; margin-bottom: 0.75rem;
+    }
+    .value-text {
+      font-size: 0.85rem; font-weight: 300;
+      line-height: 1.75; color: rgba(255,255,255,0.5);
+    }
+
+    /* Team */
+    .team-section { padding: 6rem 8vw; background: #f8f8f6; }
+    .team-grid {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .team-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .team-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(26,26,24,0.08); }
+    .team-img-wrap { aspect-ratio: 3/4; overflow: hidden; }
+    .team-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .team-card:hover .team-img { transform: scale(1.04); }
+    .team-body { padding: 1.5rem; }
+    .team-name {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 1.1rem; font-weight: 600; color: var(--ink);
+    }
+    .team-role {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--moss); margin-top: 0.25rem;
+    }
+    .team-bio {
+      font-size: 0.82rem; font-weight: 300; line-height: 1.7;
+      color: var(--mid); margin-top: 0.75rem;
+    }
+    .team-contact {
+      display: flex; gap: 0.75rem; margin-top: 1.25rem;
+      padding-top: 1.25rem; border-top: 1px solid var(--border);
+    }
+    .team-contact a {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--moss);
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .team-contact a:hover { opacity: 0.7; }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, #8C005C 0%, #C8007D 100%);
+      padding: 5rem 8vw;
+      text-align: center;
+      color: #fff;
+    }
+    .cta-banner h2 {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 300;
+    }
+    .cta-banner h2 em { font-style: italic; color: #f9a8d4; }
+    .cta-banner p {
+      margin: 1rem auto 2.5rem;
+      font-size: 0.95rem; font-weight: 300;
+      color: rgba(255,255,255,0.8);
+      max-width: 500px;
+    }
+    .cta-banner-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .story-section { grid-template-columns: 1fr; padding: 3rem 5vw; gap: 2rem; }
+      .story-img-wrap { aspect-ratio: 16/9; }
+      .story-accent { display: none; }
+      .story-stats { gap: 1.5rem; flex-wrap: wrap; }
+      .values-section { padding: 3rem 5vw; }
+      .values-grid { grid-template-columns: 1fr; }
+      .team-section { padding: 3rem 5vw; }
+      .team-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .page-hero { padding: 40px 5vw 35px; }
+      .cta-banner { padding: 3rem 5vw; }
+    }
+    @media (min-width: 600px) and (max-width: 900px) {
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="https://www.mcgovernestates.ie/Content/Site/mcgovernestates.ie/images/logo.png" alt="McGovern Estates" />
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="properties/" onclick="closeMenu()">Properties</a></li>
+    <li><a href="about.html" onclick="closeMenu()" class="active">About</a></li>
+    <li><a href="valuations.html" onclick="closeMenu()">Valuations</a></li>
+    <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+  </ul>
+  <a href="valuations.html" class="nav-cta">Free Valuation</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-hero">
+    <div class="section-eyebrow">Our Story</div>
+    <h1>Rooted in<br/><em>Wicklow</em></h1>
+    <p>McGovern Estates was founded in Greystones with a simple belief — that buying or selling a home should be a positive experience built on trust, honesty, and genuine local expertise.</p>
+  </div>
+
+  <!-- Story -->
+  <section class="story-section">
+    <div class="story-img-wrap">
+      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80" alt="McGovern Estates office" class="story-img" />
+      <div class="story-accent"></div>
+    </div>
+    <div class="story-body">
+      <div class="section-eyebrow">Who We Are</div>
+      <h2 class="section-title">A Name You Can<br/><em>Trust</em></h2>
+      <p>
+        Over the years, we've helped hundreds of families find their place in Wicklow — from first-time buyers taking their very first step onto the property ladder, to families upsizing, to those looking to settle into the next chapter of their lives along the coast.
+      </p>
+      <p>
+        We know this area inside out — every road, every school, every hidden gem that makes Greystones and North Wicklow such a special place to call home. That local knowledge, combined with honest advice and a dedicated team, is what sets us apart.
+      </p>
+      <div class="story-stats">
+        <div>
+          <div class="story-stat-num">20+</div>
+          <div class="story-stat-label">Years in Business</div>
+        </div>
+        <div>
+          <div class="story-stat-num">500+</div>
+          <div class="story-stat-label">Homes Sold</div>
+        </div>
+        <div>
+          <div class="story-stat-num">98%</div>
+          <div class="story-stat-label">Client Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="values-section">
+    <div class="section-eyebrow">What We Stand For</div>
+    <h2 class="section-title">Our <em>Values</em></h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-number">01</div>
+        <div class="value-title">Honesty First</div>
+        <p class="value-text">We give you a straight answer, every time. No inflated valuations to win instructions. No promises we can't keep. Just honest advice you can rely on.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-number">02</div>
+        <div class="value-title">Local Expertise</div>
+        <p class="value-text">We've lived and worked in this community for years. That means real insight into pricing, demand, and what makes every street tick — knowledge that moves homes faster.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-number">03</div>
+        <div class="value-title">Personal Service</div>
+        <p class="value-text">You deal with the same person from start to finish. No call centres, no handoffs. We're with you every step of the way until keys are in hand.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-number">04</div>
+        <div class="value-title">Transparent Pricing</div>
+        <p class="value-text">Clear fees, no hidden costs. You'll always know exactly what you're paying for and why — before you sign anything.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-number">05</div>
+        <div class="value-title">Market Knowledge</div>
+        <p class="value-text">Weekly market updates, accurate data, and real-time insight into what buyers are paying. We keep you informed so you can make the best decisions.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-number">06</div>
+        <div class="value-title">Community Commitment</div>
+        <p class="value-text">We're proud to be part of Greystones. We reinvest in the local community because this isn't just where we work — it's where we live.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team-section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">The People Behind the Brand</div>
+        <h2 class="section-title">Meet the <em>Team</em></h2>
+      </div>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-img-wrap">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="Ciarán McGovern" class="team-img" />
+        </div>
+        <div class="team-body">
+          <div class="team-name">Ciarán McGovern</div>
+          <div class="team-role">Director & Founder</div>
+          <p class="team-bio">With over 20 years in the Wicklow property market, Ciarán founded McGovern Estates on the principle that clients deserve honest, expert advice above all else.</p>
+          <div class="team-contact">
+            <a href="tel:+35312877088">Call Ciarán</a>
+            <a href="mailto:ciaran@mcgovernestates.ie">Email</a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-img-wrap">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80" alt="Sinéad Walsh" class="team-img" />
+        </div>
+        <div class="team-body">
+          <div class="team-name">Sinéad Walsh</div>
+          <div class="team-role">Senior Negotiator</div>
+          <p class="team-bio">Sinéad brings warmth and tenacity to every sale. A Greystones native, her knowledge of the local market is second to none and her clients keep coming back.</p>
+          <div class="team-contact">
+            <a href="tel:+35312877088">Call Sinéad</a>
+            <a href="mailto:sinead@mcgovernestates.ie">Email</a>
+          </div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-img-wrap">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80" alt="Darragh Kelly" class="team-img" />
+        </div>
+        <div class="team-body">
+          <div class="team-name">Darragh Kelly</div>
+          <div class="team-role">Property Consultant</div>
+          <p class="team-bio">Darragh specialises in lettings and new instructions. His calm approach and meticulous attention to detail make him a trusted advisor to landlords and tenants alike.</p>
+          <div class="team-contact">
+            <a href="tel:+35312877088">Call Darragh</a>
+            <a href="mailto:darragh@mcgovernestates.ie">Email</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner">
+    <h2>Ready to Make Your<br/><em>Next Move?</em></h2>
+    <p>Whether you're selling, buying, or just exploring your options — we'd love to have a chat.</p>
+    <div class="cta-banner-btns">
+      <a href="valuations.html" class="btn-primary">Get a Free Valuation →</a>
+      <a href="contact.html" class="btn-secondary">Contact the Team</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name">McGovern <span>Estates</span></div>
+      <p class="footer-desc">Your trusted estate agent in Greystones and across North Wicklow. Honest advice, local knowledge, exceptional results.</p>
+      <p class="footer-desc" style="margin-top:1rem; font-size:0.72rem; opacity:0.4;">PSRA Licence No: 001349</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Properties</div>
+      <ul class="footer-links">
+        <li><a href="properties/?type=For+Sale">For Sale</a></li>
+        <li><a href="properties/?type=To+Let">To Let</a></li>
+        <li><a href="properties/">All Properties</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="valuations.html">Free Valuation</a></li>
+        <li><a href="contact.html">Property Management</a></li>
+        <li><a href="contact.html">Mortgage Advice</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="tel:+35312877088">+353 (0)1 287 7088</a></li>
+        <li><a href="mailto:info@mcgovernestates.ie">info@mcgovernestates.ie</a></li>
+        <li><a href="https://maps.google.com/?q=Burnaby+Downs,+Greystones,+Co.+Wicklow" target="_blank">Burnaby Downs,<br/>Greystones,<br/>Co. Wicklow</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 McGovern Estates. All rights reserved. PSRA Licence No: 001349</div>
+    <div class="footer-copy">Greystones, Co. Wicklow</div>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('navLinks').classList.remove('open');
+  }
+</script>
+
+</body>
+</html>

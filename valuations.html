@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Property Valuation — McGovern Estates</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .page-wrap { padding-top: 72px; min-height: 100vh; background: #f8f8f6; }
+
+    /* Page hero */
+    .page-hero {
+      background: linear-gradient(135deg, #8C005C 0%, #C8007D 100%);
+      padding: 60px 8vw 50px;
+      color: #fff;
+    }
+    .page-hero .section-eyebrow { color: rgba(255,255,255,0.7); }
+    .page-hero .section-eyebrow::before { background: rgba(255,255,255,0.5); }
+    .page-hero h1 {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.1;
+      margin-top: 0.75rem;
+    }
+    .page-hero h1 em { font-style: italic; color: #f9a8d4; }
+    .page-hero p {
+      margin-top: 1rem;
+      font-size: 1rem; font-weight: 300;
+      color: rgba(255,255,255,0.8);
+      max-width: 540px;
+    }
+
+    /* Trust bar */
+    .trust-bar {
+      background: var(--ink);
+      padding: 1.5rem 8vw;
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .trust-icon {
+      width: 32px; height: 32px;
+      background: rgba(200,0,125,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .trust-text {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .trust-text strong { color: #fff; font-weight: 600; }
+
+    /* Main layout */
+    .val-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 8vw;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 6vw;
+      align-items: start;
+    }
+
+    /* Form */
+    .val-form-wrap {
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+    }
+    .form-heading {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 1.7rem; font-weight: 300; color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+    .form-subheading {
+      font-size: 0.85rem; color: var(--mid); font-weight: 300;
+      margin-bottom: 2rem; line-height: 1.6;
+    }
+
+    .form-section-title {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--moss);
+      margin: 2rem 0 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(200,0,125,0.15);
+    }
+    .form-section-title:first-of-type { margin-top: 0; }
+
+    .form-row { margin-bottom: 1.1rem; }
+    .form-row label {
+      display: block;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--mid); margin-bottom: 6px;
+    }
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 0.92rem; font-weight: 300; color: var(--ink);
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+      border-color: var(--moss);
+      background: #fff;
+    }
+    .form-row textarea { resize: vertical; min-height: 90px; }
+
+    .form-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-submit {
+      width: 100%;
+      background: var(--moss);
+      color: #fff;
+      border: none;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 0.85rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 18px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 0.5rem;
+    }
+    .form-submit:hover { background: var(--moss-light); transform: translateY(-1px); }
+
+    .form-note {
+      font-size: 0.75rem; color: var(--mid);
+      margin-top: 1rem; text-align: center; line-height: 1.5;
+    }
+
+    /* Success */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .form-success-icon {
+      width: 64px; height: 64px;
+      background: rgba(200,0,125,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .form-success h3 { font-size: 1.5rem; font-weight: 400; color: var(--ink); margin-bottom: 0.6rem; }
+    .form-success p { font-size: 0.9rem; color: var(--mid); line-height: 1.6; margin-bottom: 2rem; }
+
+    /* Sidebar */
+    .val-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .sidebar-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+    }
+    .sidebar-card-title {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--moss); margin-bottom: 1rem;
+    }
+
+    .process-steps { display: flex; flex-direction: column; gap: 1.25rem; }
+    .process-step { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(200,0,125,0.1);
+      color: var(--moss);
+      font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text strong { display: block; font-size: 0.88rem; color: var(--ink); margin-bottom: 2px; }
+    .step-text span { font-size: 0.78rem; color: var(--mid); font-weight: 300; }
+
+    .testimonial-mini {
+      background: var(--ink);
+      padding: 1.75rem;
+    }
+    .testimonial-mini blockquote {
+      font-size: 0.88rem; font-weight: 300;
+      line-height: 1.75; color: rgba(255,255,255,0.8);
+      font-style: italic; margin-bottom: 1.25rem;
+    }
+    .testimonial-mini-author {
+      font-size: 0.78rem; font-weight: 600; color: #fff;
+    }
+    .testimonial-mini-stars { color: #f9a8d4; font-size: 0.7rem; letter-spacing: 2px; margin-top: 3px; }
+
+    .contact-sidebar {
+      background: linear-gradient(135deg, #8C005C 0%, #C8007D 100%);
+      padding: 1.75rem;
+      color: #fff;
+      text-align: center;
+    }
+    .contact-sidebar p { font-size: 0.85rem; font-weight: 300; color: rgba(255,255,255,0.85); margin-bottom: 1.25rem; }
+    .contact-sidebar a.phone-link {
+      display: block;
+      font-size: 1.3rem; font-weight: 500; color: #fff;
+      text-decoration: none; margin-bottom: 0.25rem;
+    }
+    .contact-sidebar .sub { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 0; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .val-layout { grid-template-columns: 1fr; padding: 40px 5vw; gap: 2rem; }
+      .form-two-col { grid-template-columns: 1fr; }
+      .form-three-col { grid-template-columns: 1fr 1fr; }
+      .val-form-wrap { padding: 1.75rem; }
+      .trust-bar { gap: 1.5rem; padding: 1.25rem 5vw; }
+      .page-hero { padding: 40px 5vw 35px; }
+    }
+    @media (max-width: 480px) {
+      .form-three-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="https://www.mcgovernestates.ie/Content/Site/mcgovernestates.ie/images/logo.png" alt="McGovern Estates" />
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="properties/" onclick="closeMenu()">Properties</a></li>
+    <li><a href="about.html" onclick="closeMenu()">About</a></li>
+    <li><a href="valuations.html" onclick="closeMenu()" class="active">Valuations</a></li>
+    <li><a href="contact.html" onclick="closeMenu()">Contact</a></li>
+  </ul>
+  <a href="valuations.html" class="nav-cta">Free Valuation</a>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-hero">
+    <div class="section-eyebrow">Know Your Worth</div>
+    <h1>Free Property<br/><em>Valuation</em></h1>
+    <p>Thinking of selling? Our free, no-obligation valuation gives you an honest picture of what your property is worth in today's market — straight from someone who knows this area inside out.</p>
+  </div>
+
+  <div class="trust-bar">
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="14" height="14" fill="none" stroke="#C8007D" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="trust-text"><strong>100% Free</strong> — No obligation</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="14" height="14" fill="none" stroke="#C8007D" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="trust-text"><strong>24-hour response</strong> — Fast turnaround</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="14" height="14" fill="none" stroke="#C8007D" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      </div>
+      <div class="trust-text"><strong>Local experts</strong> — 20+ years in Wicklow</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="14" height="14" fill="none" stroke="#C8007D" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="trust-text"><strong>PSRA Licensed</strong> — Fully regulated</div>
+    </div>
+  </div>
+
+  <div class="val-layout">
+
+    <!-- Form -->
+    <div class="val-form-wrap">
+      <div id="valFormInner">
+        <h2 class="form-heading">Request Your Valuation</h2>
+        <p class="form-subheading">Fill in the details below and one of our local experts will be in touch to arrange a convenient time to visit your property.</p>
+
+        <form id="valuationForm" onsubmit="handleValSubmit(event)">
+
+          <div class="form-section-title">Your Details</div>
+
+          <div class="form-two-col">
+            <div class="form-row">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" name="firstName" placeholder="e.g. Aoife" required />
+            </div>
+            <div class="form-row">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" name="lastName" placeholder="e.g. Murphy" required />
+            </div>
+          </div>
+
+          <div class="form-two-col">
+            <div class="form-row">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
+            </div>
+            <div class="form-row">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="+353 87 000 0000" required />
+            </div>
+          </div>
+
+          <div class="form-section-title">Property Details</div>
+
+          <div class="form-row">
+            <label for="address">Property Address</label>
+            <input type="text" id="address" name="address" placeholder="e.g. 12 Burnaby Avenue, Greystones" required />
+          </div>
+
+          <div class="form-two-col">
+            <div class="form-row">
+              <label for="propType">Property Type</label>
+              <select id="propType" name="propType">
+                <option value="">Select type…</option>
+                <option value="detached">Detached House</option>
+                <option value="semi">Semi-Detached House</option>
+                <option value="terraced">Terraced House</option>
+                <option value="apartment">Apartment / Flat</option>
+                <option value="bungalow">Bungalow</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="tenure">Tenure</label>
+              <select id="tenure" name="tenure">
+                <option value="">Select…</option>
+                <option value="freehold">Freehold</option>
+                <option value="leasehold">Leasehold</option>
+                <option value="unsure">Not Sure</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-three-col">
+            <div class="form-row">
+              <label for="beds">Bedrooms</label>
+              <select id="beds" name="beds">
+                <option value="">Select</option>
+                <option>1</option><option>2</option>
+                <option>3</option><option>4</option><option>5+</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="baths">Bathrooms</label>
+              <select id="baths" name="baths">
+                <option value="">Select</option>
+                <option>1</option><option>2</option>
+                <option>3</option><option>4+</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="size">Floor Area (m²)</label>
+              <input type="text" id="size" name="size" placeholder="e.g. 110" />
+            </div>
+          </div>
+
+          <div class="form-section-title">Your Situation</div>
+
+          <div class="form-row">
+            <label for="timeline">When are you looking to sell?</label>
+            <select id="timeline" name="timeline">
+              <option value="">Select a timeframe…</option>
+              <option value="asap">As soon as possible</option>
+              <option value="3months">Within 3 months</option>
+              <option value="6months">Within 6 months</option>
+              <option value="exploring">Just exploring options</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="notes">Anything else we should know?</label>
+            <textarea id="notes" name="notes" placeholder="e.g. recently renovated, planning permission, access notes…"></textarea>
+          </div>
+
+          <button type="submit" class="form-submit">Request Free Valuation →</button>
+          <p class="form-note">100% free and no obligation. We'll never share your details with third parties.</p>
+        </form>
+      </div>
+
+      <div class="form-success" id="formSuccess">
+        <div class="form-success-icon">
+          <svg width="30" height="30" fill="none" stroke="#C8007D" stroke-width="2.5" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>Request Received!</h3>
+        <p>Thank you — we'll be in touch within one business day to arrange a convenient time to visit your property.</p>
+        <a href="properties/" class="btn-primary">Browse Our Listings</a>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="val-sidebar">
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">How It Works</div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>Submit the form</strong>
+              <span>Tell us about your property in just a few minutes.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>We'll be in touch</strong>
+              <span>A local expert will contact you within 24 hours to arrange a visit.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Property visit</strong>
+              <span>We visit your home at a time that suits you — no pressure, no hard sell.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <strong>Receive your valuation</strong>
+              <span>We provide a detailed, honest market appraisal backed by real data.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-mini">
+        <blockquote>"McGovern Estates gave us the most accurate valuation we received — and sold our house in three weeks. Brilliant from start to finish."</blockquote>
+        <div class="testimonial-mini-author">— Sarah & Colm D., Greystones</div>
+        <div class="testimonial-mini-stars">★★★★★</div>
+      </div>
+
+      <div class="contact-sidebar">
+        <p>Prefer to speak with someone directly?</p>
+        <a href="tel:+35312877088" class="phone-link">+353 (0)1 287 7088</a>
+        <p class="sub">Mon–Fri 9:00–17:30 &nbsp;·&nbsp; Sat 10:00–14:00</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name">McGovern <span>Estates</span></div>
+      <p class="footer-desc">Your trusted estate agent in Greystones and across North Wicklow. Honest advice, local knowledge, exceptional results.</p>
+      <p class="footer-desc" style="margin-top:1rem; font-size:0.72rem; opacity:0.4;">PSRA Licence No: 001349</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Properties</div>
+      <ul class="footer-links">
+        <li><a href="properties/?type=For+Sale">For Sale</a></li>
+        <li><a href="properties/?type=To+Let">To Let</a></li>
+        <li><a href="properties/">All Properties</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="valuations.html">Free Valuation</a></li>
+        <li><a href="contact.html">Property Management</a></li>
+        <li><a href="contact.html">Mortgage Advice</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="tel:+35312877088">+353 (0)1 287 7088</a></li>
+        <li><a href="mailto:info@mcgovernestates.ie">info@mcgovernestates.ie</a></li>
+        <li><a href="https://maps.google.com/?q=Burnaby+Downs,+Greystones,+Co.+Wicklow" target="_blank">Burnaby Downs,<br/>Greystones,<br/>Co. Wicklow</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 McGovern Estates. All rights reserved. PSRA Licence No: 001349</div>
+    <div class="footer-copy">Greystones, Co. Wicklow</div>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('navLinks').classList.remove('open');
+  }
+
+  function handleValSubmit(e) {
+    e.preventDefault();
+    document.getElementById('valFormInner').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
